@@ -61,11 +61,11 @@ class _AppBodyState extends State<AppBody> {
           builder: (context, authenticationState) {
             return Expanded(
               flex: 6,
-              child: authenticationState is !AuthorizedUserState ? 
-               Row(
+              child: authenticationState is AuthorizedUserState ? 
+               const Row(
                 children: [
                   Expanded(child: DistributionCenterRegisterForm()),
-                  const Expanded(child: DistributionCenterListView()),
+                  Expanded(child: DistributionCenterListView()),
                 ],
                )  : const SizedBox.shrink()
               );

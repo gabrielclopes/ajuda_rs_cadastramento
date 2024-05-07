@@ -1,9 +1,20 @@
+import 'package:ajuda_rs_cadastramento/app/ui/bloc/manage_distribution_center_bloc/manage_distribution_center_bloc.dart';
+import 'package:ajuda_rs_cadastramento/app/ui/bloc/manage_distribution_center_bloc/manage_distribution_center_events.dart';
+import 'package:ajuda_rs_cadastramento/commons/states/base_state.dart';
 import 'package:ajuda_rs_cadastramento/commons/validator/authentication_validator.dart';
+import 'package:ajuda_rs_cadastramento/data/models/distribution_center.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class DistributionCenterRegisterForm extends StatelessWidget {
-  DistributionCenterRegisterForm({super.key});
-  
+class DistributionCenterRegisterForm extends StatefulWidget {
+  const DistributionCenterRegisterForm({super.key});
+
+  @override
+  State<DistributionCenterRegisterForm> createState() => _DistributionCenterRegisterFormState();
+}
+
+class _DistributionCenterRegisterFormState extends State<DistributionCenterRegisterForm> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
@@ -14,8 +25,18 @@ class DistributionCenterRegisterForm extends StatelessWidget {
   final TextEditingController contactController = TextEditingController();
   final TextEditingController observationController = TextEditingController();
   final TextEditingController productsController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController loginController = TextEditingController();
+  final TextEditingController volunteerController = TextEditingController();
+  // final TextEditingController passwordController = TextEditingController();
+  // final TextEditingController loginController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  late final DistributionCenterBloc _distributionCenterBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _distributionCenterBloc = BlocProvider.of<DistributionCenterBloc>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,52 +44,6 @@ class DistributionCenterRegisterForm extends StatelessWidget {
       color: Colors.white,
       padding: const EdgeInsets.all(0),
       margin: const EdgeInsets.all(30), 
-      // actions: [
-      //   ElevatedButton(
-      //       onPressed: () async {
-      //         scheduleController.text.isEmpty
-      //             ? scheduleController.text = ''
-      //             : scheduleController.text = scheduleController.text;
-      //         contactController.text.isEmpty
-      //             ? contactController.text = ''
-      //             : contactController.text = contactController.text;
-      //         observationController.text.isEmpty
-      //             ? observationController.text = ''
-      //             : observationController.text = observationController.text;
-      //         productsController.text.isEmpty
-      //             ? productsController.text = ''
-      //             : productsController.text = productsController.text;
-      //         if (nameController.text.isNotEmpty &&
-      //             cityController.text.isNotEmpty &&
-      //             addressController.text.isNotEmpty &&
-      //             geoPointLatController.text.isNotEmpty &&
-      //             geoPointLongController.text.isNotEmpty) {
-      //           // await dataBaseService.setDistributionCenter(DistributionCenter(
-      //           //     name: nameController.text,
-      //           //     password: '',
-      //           //     city: cityController.text,
-      //           //     address: addressController.text,
-      //           //     geoPoint: GeoPoint(double.parse(geoPointLatController.text),
-      //           //         double.parse(geoPointLongController.text)),
-      //           //     id: '',
-      //           //     schedule: scheduleController.text,
-      //           //     contact: contactController.text,
-      //           //     observation: observationController.text,
-      //           //     login: '',
-      //           //     products: productsController.text.split(',')));
-                
-      //         } else {
-      //           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      //               content: Text('Preencha todos os campos de localização')));
-      //         }
-      //       },
-      //       child: Text('SALVAR')),
-      //   ElevatedButton(
-      //       onPressed: () {
-      //         Navigator.pop(context);
-      //       },
-      //       child: Text('CANCELAR'))
-      // ],
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ColoredBox(
@@ -79,49 +54,103 @@ class DistributionCenterRegisterForm extends StatelessWidget {
                     'PREENCHA O FORMULÁRIO PARA ADICIONAR UM CENTRO DE DISTRIBUIÇÃO'),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      TextFormField(
-                          validator: EmptyValidator.empty,
-                          controller: nameController,
-                          decoration: const InputDecoration(hintText: 'NOME')),
-                      TextField(
-                          controller: cityController,
-                          decoration: const InputDecoration(hintText: 'CIDADE')),
-                      TextField(
-                          controller: addressController,
-                          decoration: const InputDecoration(hintText: 'ENDEREÇO')),
-                      TextField(
-                          controller: scheduleController,
-                          decoration:
-                              const InputDecoration(hintText: 'HORÁRIO DE FUNCIONAMENTO')),
-                      TextField(
-                          controller: geoPointLatController,
-                          decoration: const InputDecoration(hintText: 'LATITUDE')),
-                      TextField(
-                          controller: geoPointLongController,
-                          decoration: const InputDecoration(hintText: 'LONGITUDE')),
-                      TextField(
-                          controller: contactController,
-                          decoration: const InputDecoration(hintText: 'CONTATO')),
-                      TextField(
-                          controller: observationController,
-                          decoration: const InputDecoration(hintText: 'OBSERVAÇÃO')),
-                      TextField(
-                          controller: productsController,
-                          decoration: const InputDecoration(
-                              hintText: 'PRODUTOS (SEPARAR POR VIRGULAS)')),
-                    ],
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: nameController,
+                            decoration: const InputDecoration(hintText: 'NOME')),
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: cityController,
+                            decoration: const InputDecoration(hintText: 'CIDADE')),
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: addressController,
+                            decoration: const InputDecoration(hintText: 'ENDEREÇO')),
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: scheduleController,
+                            decoration:
+                                const InputDecoration(hintText: 'HORÁRIO DE FUNCIONAMENTO')),
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: geoPointLatController,
+                            decoration: const InputDecoration(hintText: 'LATITUDE')),
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: geoPointLongController,
+                            decoration: const InputDecoration(hintText: 'LONGITUDE')),
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: contactController,
+                            decoration: const InputDecoration(hintText: 'CONTATO')),
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: observationController,
+                            decoration: const InputDecoration(hintText: 'OBSERVAÇÃO')),
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: productsController,
+                            decoration: const InputDecoration(
+                                hintText: 'PRODUTOS (SEPARAR POR VIRGULAS)')),
+                        TextFormField(
+                            validator: EmptyValidator.empty,
+                            controller: volunteerController,
+                            decoration: const InputDecoration(
+                                hintText: 'TIPOS DE VOLUNTÁRIOS (SEPARAR POR VIRGULAS)')),
+                      ],
+                    ),
                   ),
                 ),
               ),
-             const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                ElevatedButton(child: const Text('LIMPAR'), onPressed: (){},),
-                ElevatedButton(child: const Text('SALVAR'), onPressed: (){},),
-              ],)
+                  ElevatedButton(
+                    child: const Text('LIMPAR'),
+                    onPressed: () {},
+                  ),
+                  BlocBuilder<DistributionCenterBloc, BaseState>(
+                      builder: (context, state) {
+                    return ElevatedButton(
+                      onPressed: state is LoadingState
+                          ? null : () {
+                        if (_formKey.currentState!.validate()) {
+                          GeoPoint geoPoint = GeoPoint(double.parse(geoPointLatController.text), double.parse(geoPointLongController.text));
+                          DateTime now = DateTime.now();
+                          DistributionCenterModel distributionCenter = 
+                            DistributionCenterModel(
+                              name: nameController.text, 
+                              password: '', 
+                              city: cityController.text.trim().toUpperCase(), 
+                              address: addressController.text, 
+                              geoPoint: geoPoint, 
+                              id: '', 
+                              schedule: scheduleController.text, 
+                              contact: contactController.text, 
+                              observation: observationController.text, 
+                              login: '', 
+                              products: productsController.text.split(','), 
+                              lastUpdateTime: now, 
+                              volunteers: volunteerController.text.split(',')
+                            );
+
+                          _distributionCenterBloc.add(CreateDistributionCenterEvent(distributionCenter: distributionCenter));
+                        }
+                      },
+                      child: state is LoadingState
+                          ? const SizedBox(height: 10, width: 10,child: CircularProgressIndicator(),)
+                          : const Text('SALVAR'),
+                    );
+                  }),
+                ],
+              )
             ],
           ),
         ),

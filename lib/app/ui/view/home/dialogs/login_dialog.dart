@@ -95,7 +95,7 @@ class _LoginDialogState extends State<LoginDialog> {
                               backgroundColor:
                                   MaterialStatePropertyAll(Colors.green)),
                           child: state is AuthenticationLoadingState ? 
-                          const CircularProgressIndicator.adaptive(strokeWidth: 1,) : 
+                          const SizedBox(height: 10, width: 10,child: CircularProgressIndicator(),) : 
                           const Text(
                             'Autorizar acesso',
                             style: TextStyle(color: Colors.white),
