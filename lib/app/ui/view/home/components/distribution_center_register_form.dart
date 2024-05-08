@@ -1,3 +1,4 @@
+import 'package:ajuda_rs_cadastramento/app/ui/bloc/load_service_type_bloc/load_service_type_bloc.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/bloc/manage_distribution_center_bloc/manage_distribution_center_bloc.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/bloc/manage_distribution_center_bloc/manage_distribution_center_events.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/view/home/dialogs/show_credentials_dialog.dart';
@@ -30,11 +31,15 @@ class _DistributionCenterRegisterFormState extends State<DistributionCenterRegis
   final _formKey = GlobalKey<FormState>();
 
   late final DistributionCenterBloc _distributionCenterBloc;
+  late LoadServiceTypeBloc _loadServiceTypeBloc;
+  final Set<String> selectedServiceTypes = {};
+  final List<bool> checks = [];
 
   @override
   void initState() {
     super.initState();
     _distributionCenterBloc = BlocProvider.of<DistributionCenterBloc>(context);
+    _loadServiceTypeBloc = BlocProvider.of<LoadServiceTypeBloc>(context);
   }
 
   @override
@@ -61,6 +66,39 @@ class _DistributionCenterRegisterFormState extends State<DistributionCenterRegis
                             validator: EmptyValidator.empty,
                             controller: nameController,
                             decoration: const InputDecoration(hintText: 'NOME')),
+                        BlocBuilder<LoadServiceTypeBloc, BaseState>(
+                          bloc: _loadServiceTypeBloc,
+                          builder:(context, state) { 
+
+                            if(state is SuccessState<List<String>>){
+                              List<String> serviceTypeList = state.data;
+                              if(checks.isEmpty){
+                                for (var i = 0; i < serviceTypeList.length; i++) {
+                                  checks.add(false);
+                                }
+                              }
+                              
+                              return SizedBox(
+                              height: 100,
+                              child: GridView.builder(
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                                itemCount: serviceTypeList.length, itemBuilder: 
+                              (context, index) {
+                                return CheckboxListTile( value: checks[index], onChanged: (value) {
+                                  if(value != null && value){
+                                    selectedServiceTypes.add(serviceTypeList[index]);
+                                  }else{
+                                    selectedServiceTypes.remove(serviceTypeList[index]);
+                                  }
+                                  checks[index] = !checks[index];
+                                  setState(() {});
+                                }, title: Text(serviceTypeList[index], maxLines: 2, overflow: TextOverflow.ellipsis),);
+                              },),
+                            );
+                            }
+                            return const CircularProgressIndicator.adaptive();
+                          },
+                        ),
                         TextFormField(
                             validator: EmptyValidator.empty,
                             controller: cityController,
@@ -111,12 +149,12 @@ class _DistributionCenterRegisterFormState extends State<DistributionCenterRegis
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                    child: const Text('LIMPAR'),
-                    onPressed: () {
+                  // ElevatedButton(
+                  //   child: const Text('LIMPAR'),
+                  //   onPressed: () {
                       
-                    },
-                  ),
+                  //   },
+                  // ),
                   BlocConsumer<DistributionCenterBloc, BaseState>(
                     listener: (context, state) async {
                       if(state is SuccessState<(String, String)>){
@@ -136,6 +174,8 @@ class _DistributionCenterRegisterFormState extends State<DistributionCenterRegis
                           try {
                             GeoPoint geoPoint = GeoPoint(double.parse(geoPointLatController.text), double.parse(geoPointLongController.text));
                             DateTime now = DateTime.now();
+                            if(selectedServiceTypes.isEmpty) throw Exception("NO SERVICE TYPE SELECTED");
+                            
                             DistributionCenterModel distributionCenter = 
                               DistributionCenterModel(
                                 name: nameController.text, 
@@ -150,13 +190,14 @@ class _DistributionCenterRegisterFormState extends State<DistributionCenterRegis
                                 login: '', 
                                 products: productsController.text.split(','), 
                                 lastUpdateTime: now, 
-                                volunteers: volunteerController.text.split(',')
+                                volunteers: volunteerController.text.split(','),
+                                type: selectedServiceTypes.toList()
                               );
 
                             _distributionCenterBloc.add(CreateDistributionCenterEvent(distributionCenter: distributionCenter));
                           } catch (e) {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('Erro no preenchimento dos dados. Verifique se a latitude e longitude estão escritas corretamente'), duration: Duration(seconds: 6),)
+                              const SnackBar(content: Text('Erro no preenchimento dos dados. Verifique se a latitude e longitude estão escritas corretamente, e se tipos foram adicionados'), duration: Duration(seconds: 6),)
                             );
                           }
                         }

@@ -14,6 +14,7 @@ class DistributionCenterModel {
   final String login;
   final DateTime lastUpdateTime;
   final List<String> volunteers;
+  final List<String> type;
 
   const DistributionCenterModel({
     required this.name,
@@ -29,6 +30,7 @@ class DistributionCenterModel {
     required this.products,
     required this.lastUpdateTime,
     required this.volunteers,
+    required this.type
   });
 
 
@@ -36,6 +38,7 @@ class DistributionCenterModel {
   factory DistributionCenterModel.fromJson(Map<String, dynamic> json) {
     List<String> products = json['products'].toList().cast<String>();
     List<String> volunteers = json['volunteers'].toList().cast<String>();
+    List<String> type = json['type'].toList().cast<String>();
 
     final DateTime lastUpdateTime =
         (json['lastUpdateTime'] as Timestamp).toDate();
@@ -53,7 +56,9 @@ class DistributionCenterModel {
         password: json['password'],
         login: json['login'],
         lastUpdateTime: lastUpdateTime,
-        volunteers: volunteers);
+        volunteers: volunteers,
+        type: type
+        );
   }
 
   Map<String, dynamic> toJson() {
@@ -71,6 +76,7 @@ class DistributionCenterModel {
       'password': password,
       'lastUpdateTime': Timestamp.fromDate(lastUpdateTime),
       'volunteers': volunteers,
+      'type': type
     };
   }
 }

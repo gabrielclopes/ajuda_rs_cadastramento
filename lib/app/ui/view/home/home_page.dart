@@ -1,7 +1,8 @@
 import 'package:ajuda_rs_cadastramento/app/ui/bloc/authentication_bloc/authentication_bloc.dart';
+import 'package:ajuda_rs_cadastramento/app/ui/bloc/load_service_type_bloc/load_service_type_bloc.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/bloc/manage_distribution_center_bloc/manage_distribution_center_bloc.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/view/home/components/body.dart';
-import 'package:ajuda_rs_cadastramento/data/services/authentication_service.dart';
+import 'package:ajuda_rs_cadastramento/data/services/config_service.dart';
 import 'package:ajuda_rs_cadastramento/data/services/distribution_center_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +38,9 @@ class _HomePageState extends State<HomePage> {
       ),
       body: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (BuildContext context) => AuthenticationBloc(AuthenticationService(_firestore)),),
-          BlocProvider(create: (BuildContext context) => DistributionCenterBloc(DistributionCenterService(_firestore)),)
+          BlocProvider(create: (BuildContext context) => AuthenticationBloc(ConfigService(_firestore)),),
+          BlocProvider(create: (BuildContext context) => DistributionCenterBloc(DistributionCenterService(_firestore)),),
+          BlocProvider(create: (BuildContext context) => LoadServiceTypeBloc(ConfigService(_firestore)),)
         ],
          
         child: const AppBody(),

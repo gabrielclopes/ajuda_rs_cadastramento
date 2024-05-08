@@ -1,10 +1,10 @@
 import 'package:ajuda_rs_cadastramento/app/ui/bloc/authentication_bloc/authentication_bloc_states.dart';
-import 'package:ajuda_rs_cadastramento/data/services/authentication_service.dart';
+import 'package:ajuda_rs_cadastramento/data/services/config_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AuthenticationBloc extends Cubit<AuthenticationBlocState>{
 
-  final AuthenticationService _service;
+  final ConfigService _service;
   AuthenticationBloc(this._service) : super(UnauthorizedUserState());
 
   Future<void> call(String password)async{

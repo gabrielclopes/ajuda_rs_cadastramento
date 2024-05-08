@@ -1,9 +1,9 @@
 import 'package:ajuda_rs_cadastramento/app/ui/bloc/authentication_bloc/authentication_bloc.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/bloc/authentication_bloc/authentication_bloc_states.dart';
+import 'package:ajuda_rs_cadastramento/app/ui/bloc/load_service_type_bloc/load_service_type_bloc.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/view/home/components/distribution_center_list_view.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/view/home/components/distribution_center_register_form.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/view/home/dialogs/login_dialog.dart';
-import 'package:ajuda_rs_cadastramento/app/ui/view/home/dialogs/show_credentials_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,13 +17,14 @@ class AppBody extends StatefulWidget {
 class _AppBodyState extends State<AppBody> {
 
   late AuthenticationBloc _authenticationBloc;
-  
+  late LoadServiceTypeBloc _loadServiceTypeBloc;
   @override
   void initState() {
     super.initState();
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    _loadServiceTypeBloc = BlocProvider.of<LoadServiceTypeBloc>(context);
+    _initialLoad();
   }
-  
   
   @override
   Widget build(BuildContext context) {
@@ -74,5 +75,10 @@ class _AppBodyState extends State<AppBody> {
         )
       ],
     );
+  }
+
+
+  void _initialLoad(){
+    _loadServiceTypeBloc();
   }
 }

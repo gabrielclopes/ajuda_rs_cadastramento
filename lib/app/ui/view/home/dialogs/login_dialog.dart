@@ -91,14 +91,10 @@ class _LoginDialogState extends State<LoginDialog> {
                               await _authBloc(_passwordController.text.trim());
                             }
                           },
-                          style: const ButtonStyle(
-                              backgroundColor:
-                                  MaterialStatePropertyAll(Colors.green)),
                           child: state is AuthenticationLoadingState ? 
                           const SizedBox(height: 10, width: 10,child: CircularProgressIndicator(),) : 
                           const Text(
                             'Autorizar acesso',
-                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),

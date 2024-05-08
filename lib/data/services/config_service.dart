@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AuthenticationService {
+class ConfigService {
   final FirebaseFirestore _firestore;
 
-  AuthenticationService(this._firestore);
+  ConfigService(this._firestore);
 
   Future<bool> signIn(String password) async {
     try {
@@ -22,4 +22,17 @@ class AuthenticationService {
       return false;
     }
   }
+
+  Future<List<String>> loadServiceTypes() async {
+    List<String> serviceTypes = [];
+    try{
+      final snapshot = await _firestore.collection('app').doc('config').get();
+      serviceTypes = snapshot.get("serviceTypes").cast<String>();
+    } catch (e) {
+      print('Load Service Types Error = $e');
+    }
+    return serviceTypes;
+  }
+
+
 }
