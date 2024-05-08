@@ -1,5 +1,7 @@
 # personal
 node_modules
+.firebaserc
+.firebase
 
 # Miscellaneous
 *.class

@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "rsemergencia-f90d1"
-  }
+  },
+  "targets": {
+    "rsemergencia-f90d1": {
+      "hosting": {
+        "cadastramento": [
+          "ajuda-rs-cadastramento"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
