@@ -122,26 +122,32 @@ class _DistributionCenterRegisterFormState extends State<DistributionCenterRegis
                       onPressed: state is LoadingState
                           ? null : () {
                         if (_formKey.currentState!.validate()) {
-                          GeoPoint geoPoint = GeoPoint(double.parse(geoPointLatController.text), double.parse(geoPointLongController.text));
-                          DateTime now = DateTime.now();
-                          DistributionCenterModel distributionCenter = 
-                            DistributionCenterModel(
-                              name: nameController.text, 
-                              password: '', 
-                              city: cityController.text.trim().toUpperCase(), 
-                              address: addressController.text, 
-                              geoPoint: geoPoint, 
-                              id: '', 
-                              schedule: scheduleController.text, 
-                              contact: contactController.text, 
-                              observation: observationController.text, 
-                              login: '', 
-                              products: productsController.text.split(','), 
-                              lastUpdateTime: now, 
-                              volunteers: volunteerController.text.split(',')
-                            );
+                          try {
+                            GeoPoint geoPoint = GeoPoint(double.parse(geoPointLatController.text), double.parse(geoPointLongController.text));
+                            DateTime now = DateTime.now();
+                            DistributionCenterModel distributionCenter = 
+                              DistributionCenterModel(
+                                name: nameController.text, 
+                                password: '', 
+                                city: cityController.text.trim().toUpperCase(), 
+                                address: addressController.text, 
+                                geoPoint: geoPoint, 
+                                id: '', 
+                                schedule: scheduleController.text, 
+                                contact: contactController.text, 
+                                observation: observationController.text, 
+                                login: '', 
+                                products: productsController.text.split(','), 
+                                lastUpdateTime: now, 
+                                volunteers: volunteerController.text.split(',')
+                              );
 
-                          _distributionCenterBloc.add(CreateDistributionCenterEvent(distributionCenter: distributionCenter));
+                            _distributionCenterBloc.add(CreateDistributionCenterEvent(distributionCenter: distributionCenter));
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Erro no preenchimento dos dados. Verifique se a latitude e longitude estão escritas corretamente'), duration: Duration(seconds: 6),)
+                            );
+                          }
                         }
                       },
                       child: state is LoadingState
