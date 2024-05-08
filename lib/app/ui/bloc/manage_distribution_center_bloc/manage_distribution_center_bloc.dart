@@ -11,8 +11,8 @@ class DistributionCenterBloc extends Bloc<ManageDistributionCenterEvent, BaseSta
     on<CreateDistributionCenterEvent>(((event, emit) async {
       emit(LoadingState());
       try {
-        await _distributionCenterService.createDistributionCenter(event.distributionCenter);
-        emit(SuccessState(null));
+        (String, String) result = await _distributionCenterService.createDistributionCenter(event.distributionCenter);
+        emit(SuccessState(result));
       } catch (e) {
         emit(ErrorState(e.toString()));
       }

@@ -3,6 +3,7 @@ import 'package:ajuda_rs_cadastramento/app/ui/bloc/authentication_bloc/authentic
 import 'package:ajuda_rs_cadastramento/app/ui/view/home/components/distribution_center_list_view.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/view/home/components/distribution_center_register_form.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/view/home/dialogs/login_dialog.dart';
+import 'package:ajuda_rs_cadastramento/app/ui/view/home/dialogs/show_credentials_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

@@ -1,5 +1,6 @@
 import 'package:ajuda_rs_cadastramento/app/ui/bloc/manage_distribution_center_bloc/manage_distribution_center_bloc.dart';
 import 'package:ajuda_rs_cadastramento/app/ui/bloc/manage_distribution_center_bloc/manage_distribution_center_events.dart';
+import 'package:ajuda_rs_cadastramento/app/ui/view/home/dialogs/show_credentials_dialog.dart';
 import 'package:ajuda_rs_cadastramento/commons/states/base_state.dart';
 import 'package:ajuda_rs_cadastramento/commons/validator/authentication_validator.dart';
 import 'package:ajuda_rs_cadastramento/data/models/distribution_center.dart';
@@ -26,8 +27,6 @@ class _DistributionCenterRegisterFormState extends State<DistributionCenterRegis
   final TextEditingController observationController = TextEditingController();
   final TextEditingController productsController = TextEditingController();
   final TextEditingController volunteerController = TextEditingController();
-  // final TextEditingController passwordController = TextEditingController();
-  // final TextEditingController loginController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   late final DistributionCenterBloc _distributionCenterBloc;
@@ -114,9 +113,21 @@ class _DistributionCenterRegisterFormState extends State<DistributionCenterRegis
                 children: [
                   ElevatedButton(
                     child: const Text('LIMPAR'),
-                    onPressed: () {},
+                    onPressed: () {
+                      
+                    },
                   ),
-                  BlocBuilder<DistributionCenterBloc, BaseState>(
+                  BlocConsumer<DistributionCenterBloc, BaseState>(
+                    listener: (context, state) async {
+                      if(state is SuccessState<(String, String)>){
+                        String login =  state.data.$1;
+                        String password =  state.data.$2;
+                        await showDialog(context: context,barrierDismissible: false, 
+                          builder: (context) {
+                            return ShowCredentialsDialog(login: login, password: password);
+                          },);
+                      }
+                    },
                       builder: (context, state) {
                     return ElevatedButton(
                       onPressed: state is LoadingState

@@ -1,6 +1,5 @@
 {
   "hosting": {
-    "target": "cadastramento",
     "public": "build/web",
     "ignore": [
       "firebase.json",

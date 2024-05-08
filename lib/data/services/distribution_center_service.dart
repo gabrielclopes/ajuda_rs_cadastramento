@@ -7,7 +7,7 @@ class DistributionCenterService {
 
   DistributionCenterService(this._firestore);
 
-  Future<void> createDistributionCenter(DistributionCenterModel newDistributionCenter) async {
+  Future<(String, String)> createDistributionCenter(DistributionCenterModel newDistributionCenter) async {
     try {
       await Future.delayed(const Duration(seconds: 3));
       
@@ -24,9 +24,11 @@ class DistributionCenterService {
       distributionCenterJson['id'] = document.id;
       
       await document.set(distributionCenterJson);
+      return (login, password);
     } catch (e) {
       print('Create Distribution Center Error = $e');
     }
+    return ("", "");
   }
   
   Future<void> updateDistributionCenter( ) async {
