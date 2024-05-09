@@ -1,16 +1,11 @@
 {
   "hosting": {
+    "site": "ajuda-rs-cadastramento",
     "public": "build/web",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   }
 }

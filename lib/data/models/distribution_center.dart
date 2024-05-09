@@ -76,7 +76,9 @@ class DistributionCenterModel {
       'password': password,
       'lastUpdateTime': Timestamp.fromDate(lastUpdateTime),
       'volunteers': volunteers,
-      'type': type
+      'type': type,
+      'vacancies': type.contains('Abrigo') ? 0 : null,
+      'shelteredPeople': type.contains('Abrigo') ? 0 : null,
     };
   }
 }
